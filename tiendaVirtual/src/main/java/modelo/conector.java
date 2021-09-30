@@ -354,4 +354,31 @@ public class conector {
 		
 	}
 	
+	// Modulo ventas
+	
+	public productos consultarProducto(String codigo) {
+		conectar();
+		productos producto = new productos();
+		String consulta = "SELECT * FROM tienda_virtual.productos WHERE codigoProducto = '" + codigo + "'";
+		try {
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(consulta);
+			if (rs.next()) {
+				
+				producto.setCodigoProducto(rs.getString("codigoProducto"));
+				producto.setNombreProducto(rs.getString("nombreProducto"));
+				producto.setNitProveedor(rs.getString("nitProveedor"));
+				producto.setPrecioCompra(rs.getString("precioCompra"));
+				producto.setIva(rs.getString("iva"));
+				producto.setPrecioVenta(rs.getString("precioVenta"));
+				
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return producto;
+	}
+	
 }

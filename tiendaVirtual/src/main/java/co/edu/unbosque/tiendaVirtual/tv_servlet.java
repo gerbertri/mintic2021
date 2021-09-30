@@ -4,6 +4,7 @@ import modelo.cliente;
 import modelo.conector;
 import modelo.proveedor;
 import modelo.usuario;
+import modelo.productos;
 
 import java.io.IOException;
 
@@ -49,7 +50,10 @@ public class tv_servlet extends HttpServlet {
 		String botonConsultaUsuario = request.getParameter("cedulaUsuario");
 		String botonConsultaCliente = request.getParameter("cedulaCliente");
 		String botonConsultaProveedor = request.getParameter("nit");
-
+		String botonConsultaVentas = request.getParameter("cedulaClienteVentas");
+		String botonConsltaVentasProducto_1=request.getParameter("codigoProducto_1");
+		String botonConsltaVentasProducto_2=request.getParameter("codigoProducto_2");
+		String botonConsltaVentasProducto_3=request.getParameter("codigoProducto_3");
 
 		// Modulo usuarios
 
@@ -165,13 +169,140 @@ public class tv_servlet extends HttpServlet {
 				response.sendRedirect("consultarProveedor.jsp");
 			}
 		}
-
+		
+		// Modulo Ventas//
+		
+			//Validacion cliente -- Mira si el cliente exite en la base de datos
+		if(botonConsultaVentas != null) {
+			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+	
+			cliente cliente = conexion.consultarCliente(botonConsultaVentas);
+			String nombreCliente = cliente.getNombreCliente();
+	
+			System.out.println("nombreCliente");
+			if (nombreCliente != null) {
+				request.setAttribute("display", "none");
+				/*
+				request.setAttribute("Nombre", nombreCliente);
+				request.setAttribute("Cedula", cedulaCliente);
+				request.setAttribute("Correo", correoCliente);
+				request.setAttribute("Telefono", telefonoCliente);
+				request.setAttribute("Direccion", direccionCliente);
+				*/
+	
+				rd.forward(request, response);
+	
+			}
+			else {
+	
+				JOptionPane optionPane = new JOptionPane("La cedula del cliente no existe",
+						JOptionPane.WARNING_MESSAGE);
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				response.sendRedirect("ventas.jsp");
+			}
+		}
+		
+		 // Consulta 1er producto
+		
+		if (botonConsltaVentasProducto_1!=null) {
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_1);
+			String nombreProducto=producto.getNombreProducto();
+			if (nombreProducto != null) {
+				
+				request.setAttribute("codigoProducto1", producto.getCodigoProducto());
+				request.setAttribute("nombreProducto1", producto.getNombreProducto());
+				rd.forward(request, response);
+				
+			}else {
+	
+				JOptionPane optionPane = new JOptionPane("El producto no existe",
+						JOptionPane.WARNING_MESSAGE);
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				//response.sendRedirect("ventasValidado.jsp");
+			}
+			
+			rd.forward(request, response);
+			
+		}
+		
+		// Consulta 2do producto
+		
+		if (botonConsltaVentasProducto_2!=null) {
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_2);
+			String nombreProducto=producto.getNombreProducto();
+			if (nombreProducto != null) {
+				
+				request.setAttribute("codigoProducto2", producto.getCodigoProducto());
+				request.setAttribute("nombreProducto2", producto.getNombreProducto());
+				
+				
+			}else {
+	
+				JOptionPane optionPane = new JOptionPane("El producto no existe2",
+						JOptionPane.WARNING_MESSAGE);
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				//response.sendRedirect("ventasValidado.jsp");
+			}
+			
+			
+			
+		}
+		
+		
+		// Consulta 3er producto
+		
+		if (botonConsltaVentasProducto_3!=null) {
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_3);
+			String nombreProducto=producto.getNombreProducto();
+			if (nombreProducto != null) {
+				
+				request.setAttribute("codigoProducto3", producto.getCodigoProducto());
+				request.setAttribute("nombreProducto3", producto.getNombreProducto());
+				rd.forward(request, response);
+				
+			}else {
+	
+				JOptionPane optionPane = new JOptionPane("El producto no existe3",
+						JOptionPane.WARNING_MESSAGE);
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				//response.sendRedirect("ventasValidado.jsp");
+			}
+			
+			
+			
+		}
+		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

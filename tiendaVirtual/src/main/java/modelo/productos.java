@@ -19,6 +19,8 @@ public class productos {
 		this.iva = iva;
 		this.precioVenta = precioVenta;
 	}
+	public productos() {}
+	
 	public String getCodigoProducto() {
 		return codigoProducto;
 	}

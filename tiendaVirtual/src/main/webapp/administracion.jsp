@@ -47,7 +47,7 @@
 			</ul></li>
 			
 			
-			<li id="item"><a href="#">Ventas</a></li>
+			<li id="item"><a href="ventas.jsp">Ventas</a></li>
 			<li id="item"><a href="#">Reportes</a></li>
 		</ul>
 	</div>
