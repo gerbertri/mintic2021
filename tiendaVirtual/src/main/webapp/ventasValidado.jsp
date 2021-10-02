@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ page import="modelo.conector" %>
+<%@ page import="modelo.productoVenta" %>
+<%@ page import="javax.servlet.*" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +14,7 @@
 </head>
 <body>
 	<%@include file="administracion.jsp"%>
+	
 	<div id="Contenido">
 		<section class="registro">
 			<h2>Consultar cliente para registrar venta</h2>
@@ -34,7 +39,7 @@
                     </tr>
                       
                     <tr >
-                        <td align="middle"><input class="ventadatos" type="text" name="codigoProducto_1"></td>
+                        <td align="middle"><input class="ventadatos" type="text" name="codigoProducto_1" value=""></td>
                         <td align="middle"><input type="submit" class="botonConsulta-producto" id="botonConsultaProducto_1" value="Consultar" ></td>
                         <td align="middle" ><% if (request.getAttribute("nombreProducto1")!=null){out.print(request.getAttribute("nombreProducto1"));}else{out.print("--");}%></td>
                         <td  width="10%" align="middle"><input class="ventadatos" type="text" name="cantidadProducto_1"></td>
@@ -43,9 +48,9 @@
 
                     </tr>
                      <tr >
-                        <td align="middle"><input class="ventadatos" type="text" name="codigoProducto_2" ></td>
+                        <td align="middle"><input class="ventadatos" type="text" name="codigoProducto_2" value=""></td>
                         <td align="middle"><input type="submit" class="botonConsulta-producto" id="botonConsultaProducto_2" value="Consultar"></td>
-                        <td align="middle"><% if (request.getAttribute("nombreProducto2")!=null){out.print(request.getAttribute("nombreProducto2"));}else{out.print("--");}%></td>
+                         <td align="middle"><% if (request.getAttribute("nombreProducto2")!=null){out.print(request.getAttribute("nombreProducto2"));}else{out.print("--");}%></td>
                         <td  width="10%" align="middle"><input class="ventadatos" type="text" name="cantidadProducto_2"> </td>
                         <td  width="20%" align="middle">-- </td>
 
@@ -71,10 +76,12 @@
                         <td align="middle" ><h5>Valor</h5></td>
                     </tr>
                 </table>
-                <br>
-                <input type="submit" class="botonConfirma-ventas" id="botonConfirmaVentas" value="Confirmar">
-                <br>
-                <br>
+                
+           
+              <br>
+              <input type="submit" class="botonConfirma-ventas" id="botonConfirmaVentas" value="Confirmar">
+              <br>
+              
             </form>
 		</section>
 
@@ -86,3 +93,11 @@
 
 </body>
 </html>
+<%!
+		private productoVenta venta;
+	
+
+		
+		
+
+	%>

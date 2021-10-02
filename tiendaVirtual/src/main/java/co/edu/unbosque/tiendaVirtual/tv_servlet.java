@@ -2,11 +2,13 @@ package co.edu.unbosque.tiendaVirtual;
 
 import modelo.cliente;
 import modelo.conector;
+import modelo.productoVenta;
 import modelo.proveedor;
 import modelo.usuario;
 import modelo.productos;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,6 +26,9 @@ import javax.swing.JOptionPane;
 public class tv_servlet extends HttpServlet {
 
 	private conector conexion;
+	private productoVenta venta=new productoVenta();
+
+	productos listaproducto[]=new productos[3];
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,6 +51,9 @@ public class tv_servlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		
+		String labels[]= {"nombreProducto1","nombreProducto2","nombreProducto3"};
 
 		String botonConsultaUsuario = request.getParameter("cedulaUsuario");
 		String botonConsultaCliente = request.getParameter("cedulaCliente");
@@ -54,7 +62,10 @@ public class tv_servlet extends HttpServlet {
 		String botonConsltaVentasProducto_1=request.getParameter("codigoProducto_1");
 		String botonConsltaVentasProducto_2=request.getParameter("codigoProducto_2");
 		String botonConsltaVentasProducto_3=request.getParameter("codigoProducto_3");
-
+		String botonConfirmaVentas_1=request.getParameter("cantidadProducto_1");
+		String botonConfirmaVentas_2=request.getParameter("cantidadProducto_2");
+		String botonConfirmaVentas_3=request.getParameter("cantidadProducto_3");
+		
 		// Modulo usuarios
 
 		
@@ -107,10 +118,6 @@ public class tv_servlet extends HttpServlet {
 			String correoCliente = cliente.getCorreoCliente();
 			String telefonoCliente = cliente.getTelefonoCliente();
 			String direccionCliente = cliente.getDireccionCliente();
-
-		
-
-
 			System.out.println("nombreCliente");
 			if (nombreCliente != null) {			
 				request.setAttribute("Nombre", nombreCliente);
@@ -173,22 +180,16 @@ public class tv_servlet extends HttpServlet {
 		// Modulo Ventas//
 		
 			//Validacion cliente -- Mira si el cliente exite en la base de datos
-		if(botonConsultaVentas != null) {
+		if(botonConsultaVentas != null && botonConsultaVentas.length()>=1) {
 			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
-	
 			cliente cliente = conexion.consultarCliente(botonConsultaVentas);
 			String nombreCliente = cliente.getNombreCliente();
-	
 			System.out.println("nombreCliente");
 			if (nombreCliente != null) {
 				request.setAttribute("display", "none");
-				/*
-				request.setAttribute("Nombre", nombreCliente);
-				request.setAttribute("Cedula", cedulaCliente);
-				request.setAttribute("Correo", correoCliente);
-				request.setAttribute("Telefono", telefonoCliente);
-				request.setAttribute("Direccion", direccionCliente);
-				*/
+				venta.agregarProductoVenta(null, 0);
+				venta.agregarProductoVenta(null, 1);
+				venta.agregarProductoVenta(null, 2);
 	
 				rd.forward(request, response);
 	
@@ -206,42 +207,62 @@ public class tv_servlet extends HttpServlet {
 		
 		 // Consulta 1er producto
 		
-		if (botonConsltaVentasProducto_1!=null) {
+		if (botonConsltaVentasProducto_1!=null && botonConsltaVentasProducto_1.length()>=1) {
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+			RequestDispatcher rd = request.getServletContext().getRequestDispatcher("/ventasValidado.jsp");
 			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_1);
 			String nombreProducto=producto.getNombreProducto();
 			if (nombreProducto != null) {
-				
-				request.setAttribute("codigoProducto1", producto.getCodigoProducto());
-				request.setAttribute("nombreProducto1", producto.getNombreProducto());
+				venta.agregarProductoVenta(producto, 0);
+				listaproducto=venta.retornarProductos();
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
 				rd.forward(request, response);
 				
 			}else {
 	
-				JOptionPane optionPane = new JOptionPane("El producto no existe",
+				JOptionPane optionPane = new JOptionPane("El producto no existe1",
 						JOptionPane.WARNING_MESSAGE);
 				JDialog dialog = optionPane.createDialog("MinTech");
 				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
+				listaproducto=venta.retornarProductos();
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
+				rd.forward(request, response);
 				//response.sendRedirect("ventasValidado.jsp");
 			}
 			
-			rd.forward(request, response);
+			
 			
 		}
 		
 		// Consulta 2do producto
 		
-		if (botonConsltaVentasProducto_2!=null) {
+		if (botonConsltaVentasProducto_2!=null && botonConsltaVentasProducto_2.length()>=1) {
 			
-			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
-			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_2);
-			String nombreProducto=producto.getNombreProducto();
+			RequestDispatcher rd = request.getServletContext().getRequestDispatcher("/ventasValidado.jsp");
+			productos producto2=conexion.consultarProducto(botonConsltaVentasProducto_2);
+			String nombreProducto=producto2.getNombreProducto();
 			if (nombreProducto != null) {
+				venta.agregarProductoVenta(producto2, 1);
+				listaproducto=venta.retornarProductos();
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
 				
-				request.setAttribute("codigoProducto2", producto.getCodigoProducto());
-				request.setAttribute("nombreProducto2", producto.getNombreProducto());
+				rd.forward(request, response);
 				
 				
 			}else {
@@ -251,6 +272,13 @@ public class tv_servlet extends HttpServlet {
 				JDialog dialog = optionPane.createDialog("MinTech");
 				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
+				rd.forward(request, response);
 				//response.sendRedirect("ventasValidado.jsp");
 			}
 			
@@ -261,15 +289,21 @@ public class tv_servlet extends HttpServlet {
 		
 		// Consulta 3er producto
 		
-		if (botonConsltaVentasProducto_3!=null) {
+		if (botonConsltaVentasProducto_3!=null && botonConsltaVentasProducto_3.length()>=1) {
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
-			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_3);
-			String nombreProducto=producto.getNombreProducto();
+			productos producto3=conexion.consultarProducto(botonConsltaVentasProducto_3);
+			String nombreProducto=producto3.getNombreProducto();
 			if (nombreProducto != null) {
-				
-				request.setAttribute("codigoProducto3", producto.getCodigoProducto());
-				request.setAttribute("nombreProducto3", producto.getNombreProducto());
+				venta.agregarProductoVenta(producto3, 2);
+				//request.setAttribute("codigoProducto3", producto3.getCodigoProducto());
+				listaproducto=venta.retornarProductos();
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
 				rd.forward(request, response);
 				
 			}else {
@@ -279,11 +313,28 @@ public class tv_servlet extends HttpServlet {
 				JDialog dialog = optionPane.createDialog("MinTech");
 				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
+				int i=0;
+				for(productos x:listaproducto) {
+				System.out.println(x);
+					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					i++;
+				}
+				rd.forward(request, response);
 				//response.sendRedirect("ventasValidado.jsp");
 			}
 			
 			
 			
+		}
+		
+		
+		//Calculo de precio total tomando cantidades
+		
+		if(botonConfirmaVentas_1 != null && botonConfirmaVentas_1.length() >= 1) {
+			
+			System.out.println(botonConfirmaVentas_1+"**");
+			System.out.println(botonConfirmaVentas_2+"**");
+			System.out.println(botonConfirmaVentas_3+"**");
 		}
 		
 	}
