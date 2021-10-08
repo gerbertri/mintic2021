@@ -16,4 +16,6 @@ public class productoVenta {
 		
 		return listaproducto;
 	}
+	
+	
 }

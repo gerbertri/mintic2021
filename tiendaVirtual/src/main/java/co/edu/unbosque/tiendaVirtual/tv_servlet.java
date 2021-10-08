@@ -8,6 +8,7 @@ import modelo.usuario;
 import modelo.productos;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -27,9 +28,10 @@ public class tv_servlet extends HttpServlet {
 
 	private conector conexion;
 	private productoVenta venta=new productoVenta();
-
+	String labels[][]= {{"nombreProducto1","nombreProducto2","nombreProducto3"},{"cantidadProducto_1","cantidadProducto_2","cantidadProducto_3"},{"totalValorProducto_1","totalValorProducto_2","totalValorProducto_3"}};
+	String cantidades_productos[][]= {{null,null,null},{null,null,null}};
 	productos listaproducto[]=new productos[3];
-
+	private String usuarioLogin;
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -53,18 +55,19 @@ public class tv_servlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		
-		String labels[]= {"nombreProducto1","nombreProducto2","nombreProducto3"};
-
+		
 		String botonConsultaUsuario = request.getParameter("cedulaUsuario");
 		String botonConsultaCliente = request.getParameter("cedulaCliente");
 		String botonConsultaProveedor = request.getParameter("nit");
 		String botonConsultaVentas = request.getParameter("cedulaClienteVentas");
-		String botonConsltaVentasProducto_1=request.getParameter("codigoProducto_1");
-		String botonConsltaVentasProducto_2=request.getParameter("codigoProducto_2");
-		String botonConsltaVentasProducto_3=request.getParameter("codigoProducto_3");
-		String botonConfirmaVentas_1=request.getParameter("cantidadProducto_1");
-		String botonConfirmaVentas_2=request.getParameter("cantidadProducto_2");
-		String botonConfirmaVentas_3=request.getParameter("cantidadProducto_3");
+		String botonConsltaVentasProducto_1=request.getParameter("botonConsultaProducto_1");
+		String botonConsltaVentasProducto_2=request.getParameter("botonConsultaProducto_2");
+		String botonConsltaVentasProducto_3=request.getParameter("botonConsultaProducto_3");
+		
+		String botonConfirmaVentas=request.getParameter("botonConfirmaVentas");
+		
+		
+		
 		
 		// Modulo usuarios
 
@@ -155,6 +158,8 @@ public class tv_servlet extends HttpServlet {
 			String ciudadProveedor = proveedor.getCiudadProveedor();
 			String telefonoProveedor = proveedor.getTelefonoProveedor();
 			String direccionProveedor = proveedor.getDireccionProveedor();
+			
+			
 			if (nombreProveedor != null) {
 
 				request.setAttribute("Nombre", nombreProveedor);
@@ -179,18 +184,20 @@ public class tv_servlet extends HttpServlet {
 		
 		// Modulo Ventas//
 		
-			//Validacion cliente -- Mira si el cliente exite en la base de datos
-		if(botonConsultaVentas != null && botonConsultaVentas.length()>=1) {
+			//Validacion cliente -- Mira si el cliente existe en la base de datos
+		
+		if(botonConsultaVentas != null && botonConsultaVentas.length()>0) {
 			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
-			cliente cliente = conexion.consultarCliente(botonConsultaVentas);
+			cliente cliente = conexion.consultarCliente(request.getParameter("cedulaClienteVentas"));
+			
 			String nombreCliente = cliente.getNombreCliente();
-			System.out.println("nombreCliente");
+			System.out.println("ElClienteExiste");
 			if (nombreCliente != null) {
 				request.setAttribute("display", "none");
 				venta.agregarProductoVenta(null, 0);
 				venta.agregarProductoVenta(null, 1);
 				venta.agregarProductoVenta(null, 2);
-	
+				cantidades_productos=new String[2][3];
 				rd.forward(request, response);
 	
 			}
@@ -207,21 +214,28 @@ public class tv_servlet extends HttpServlet {
 		
 		 // Consulta 1er producto
 		
-		if (botonConsltaVentasProducto_1!=null && botonConsltaVentasProducto_1.length()>=1) {
+		if (botonConsltaVentasProducto_1!=null) {
+			
+			
 			
 			RequestDispatcher rd = request.getServletContext().getRequestDispatcher("/ventasValidado.jsp");
-			productos producto=conexion.consultarProducto(botonConsltaVentasProducto_1);
+			productos producto=conexion.consultarProducto(request.getParameter("codigoProducto_1"));
 			String nombreProducto=producto.getNombreProducto();
 			if (nombreProducto != null) {
 				venta.agregarProductoVenta(producto, 0);
 				listaproducto=venta.retornarProductos();
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
 				rd.forward(request, response);
+				
 				
 			}else {
 	
@@ -233,8 +247,12 @@ public class tv_servlet extends HttpServlet {
 				listaproducto=venta.retornarProductos();
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
 				rd.forward(request, response);
@@ -247,21 +265,24 @@ public class tv_servlet extends HttpServlet {
 		
 		// Consulta 2do producto
 		
-		if (botonConsltaVentasProducto_2!=null && botonConsltaVentasProducto_2.length()>=1) {
+		if (botonConsltaVentasProducto_2!=null) {
 			
 			RequestDispatcher rd = request.getServletContext().getRequestDispatcher("/ventasValidado.jsp");
-			productos producto2=conexion.consultarProducto(botonConsltaVentasProducto_2);
+			productos producto2=conexion.consultarProducto(request.getParameter("codigoProducto_2"));
 			String nombreProducto=producto2.getNombreProducto();
 			if (nombreProducto != null) {
 				venta.agregarProductoVenta(producto2, 1);
 				listaproducto=venta.retornarProductos();
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
-				
 				rd.forward(request, response);
 				
 				
@@ -272,10 +293,15 @@ public class tv_servlet extends HttpServlet {
 				JDialog dialog = optionPane.createDialog("MinTech");
 				dialog.setAlwaysOnTop(true);
 				dialog.setVisible(true);
+			
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
 				rd.forward(request, response);
@@ -289,10 +315,10 @@ public class tv_servlet extends HttpServlet {
 		
 		// Consulta 3er producto
 		
-		if (botonConsltaVentasProducto_3!=null && botonConsltaVentasProducto_3.length()>=1) {
+		if (botonConsltaVentasProducto_3!=null) {
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
-			productos producto3=conexion.consultarProducto(botonConsltaVentasProducto_3);
+			productos producto3=conexion.consultarProducto(request.getParameter("codigoProducto_3"));
 			String nombreProducto=producto3.getNombreProducto();
 			if (nombreProducto != null) {
 				venta.agregarProductoVenta(producto3, 2);
@@ -300,8 +326,12 @@ public class tv_servlet extends HttpServlet {
 				listaproducto=venta.retornarProductos();
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
 				rd.forward(request, response);
@@ -315,8 +345,12 @@ public class tv_servlet extends HttpServlet {
 				dialog.setVisible(true);
 				int i=0;
 				for(productos x:listaproducto) {
-				System.out.println(x);
-					if (x != null) {request.setAttribute(labels[i], x.getNombreProducto());}
+					
+					if (x != null) {
+						request.setAttribute(labels[0][i], x.getNombreProducto());
+						request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+						request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+						}
 					i++;
 				}
 				rd.forward(request, response);
@@ -330,12 +364,63 @@ public class tv_servlet extends HttpServlet {
 		
 		//Calculo de precio total tomando cantidades
 		
-		if(botonConfirmaVentas_1 != null && botonConfirmaVentas_1.length() >= 1) {
+		if(botonConfirmaVentas != null ) {
 			
-			System.out.println(botonConfirmaVentas_1+"**");
-			System.out.println(botonConfirmaVentas_2+"**");
-			System.out.println(botonConfirmaVentas_3+"**");
+			RequestDispatcher rd = request.getRequestDispatcher("/ventasValidado.jsp");
+		
+			listaproducto=venta.retornarProductos();
+			
+			if (request.getParameter("cantidadProducto_1").length()>0 ) {
+				 //System.out.println(listaproducto[0].getPrecioVenta());
+				 int totalValorProducto_1=Integer.parseInt(request.getParameter("cantidadProducto_1"))*Integer.parseInt(listaproducto[0].getPrecioVenta());
+				 cantidades_productos[0][0]=request.getParameter("cantidadProducto_1");
+				 cantidades_productos[1][0]=Integer.toString(totalValorProducto_1);
+			}
+			
+			if (request.getParameter("cantidadProducto_2").length() >0) {
+				
+				 int totalValorProducto_2=Integer.parseInt(request.getParameter("cantidadProducto_2"))*Integer.parseInt(listaproducto[1].getPrecioVenta());
+				 cantidades_productos[0][1]=request.getParameter("cantidadProducto_2");
+				 cantidades_productos[1][1]=Integer.toString(totalValorProducto_2);
+			}
+			
+			if (request.getParameter("cantidadProducto_3").length()>0) {
+				
+				 int totalValorProducto_3=Integer.parseInt(request.getParameter("cantidadProducto_3"))*Integer.parseInt(listaproducto[2].getPrecioVenta());
+				 cantidades_productos[0][2]=request.getParameter("cantidadProducto_3");
+				 cantidades_productos[1][2]=Integer.toString(totalValorProducto_3);
+			}
+			float sumatoria=0;
+			float sumatoriaIva=0;
+			float sumatoriaTotal=0;
+			int i=0;
+			for(productos x:listaproducto) {
+				
+				if (x != null) {
+					request.setAttribute(labels[0][i], x.getNombreProducto());
+					request.setAttribute(labels[1][i],cantidades_productos[0][i]);
+					request.setAttribute(labels[2][i],cantidades_productos[1][i]);
+					sumatoria+= Float.parseFloat(cantidades_productos[1][i]);
+					sumatoriaIva+=Float.parseFloat(cantidades_productos[1][i])*(Float.parseFloat(x.getIva())/100);
+					System.out.println("el iva es "+ (Float.parseFloat(x.getIva())/100));
+					System.out.println("la cantidad es"+ cantidades_productos[1][i]);
+
+					}
+				i++;
+			}
+			sumatoriaTotal=sumatoria+sumatoriaIva;
+			NumberFormat moneda = NumberFormat.getCurrencyInstance();
+			String monedaSumatoria=moneda.format(sumatoria);
+			String monedaSumatoriaIva=moneda.format(sumatoriaIva);
+			String monedaSumatoriaTotal=moneda.format(sumatoriaTotal);
+			System.out.println(usuarioLogin);
+			request.setAttribute("sumatoria",monedaSumatoria);
+			request.setAttribute("sumatoriaIva",monedaSumatoriaIva);
+			request.setAttribute("sumatoriaTotal",monedaSumatoriaTotal);
+			rd.forward(request, response);
 		}
+		
+		
 		
 	}
 
@@ -409,11 +494,15 @@ public class tv_servlet extends HttpServlet {
 		String ActualizaCiudadP = request.getParameter("ActualizaCiudadP");
 
 		String nitBorrarP = request.getParameter("nitBorrar");
+		
+		
+		String botonFinalizaVentas=request.getParameter("botonFinalizaVentas");
 
 		Boolean validaUsuario = conexion.validarUsuario(Usuario, Contrasena);
 		RequestDispatcher rd;
 
 		if (validaUsuario) {
+			usuarioLogin=Usuario;
 			rd = request.getRequestDispatcher("/administracion.jsp");
 			rd.forward(request, response);
 		}
@@ -742,7 +831,14 @@ public class tv_servlet extends HttpServlet {
 				response.sendRedirect("borrarProveedor.jsp");
 			}
 		}
-
+		
+		if(botonFinalizaVentas != null ) {
+			
+			System.out.println("Holamundis");
+		}
+		
 	}
+	
+	
 
 }
