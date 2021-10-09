@@ -60,6 +60,25 @@ public class conector {
 		}
 		return valido;
 	}
+	
+	public String cedulaUsuario(String usuario) {// Retornar la cedula del usuario para guardarla en un objeto en el servlet y poderla llevar a otra base de datos
+		conectar();
+		String consultaU = "SELECT cedulaUsuario FROM tienda_virtual.usuarios WHERE usuario = '" + usuario + "'";
+		try {
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(consultaU);
+			if (rs.next()) {
+				String cedula = rs.getString("cedulaUsuario");
+				
+					return cedula;
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public usuario consultarUsuario(String cedulaI) {
 		conectar();
@@ -380,5 +399,60 @@ public class conector {
 		}
 		return producto;
 	}
+	
+	public Boolean confirmarVenta(ventaConfirmada venta_confirmada, productos[] listaproductos, String cantidades_productos[][]) {
+		conectar();
+		int codigo_venta=0;
+		String consulta = "INSERT INTO tienda_virtual.ventas (cedula_cliente,cedula_usuario,valor_total,valor_iva,valor_totalConIva) VALUES ('"
+				+ venta_confirmada.getCeludula_cliente() + "' , '" + venta_confirmada.getCedula_usuario() + "' , '" + venta_confirmada.getValor_venta() + "' , '" + venta_confirmada.getValor_iva() + "' , '" + venta_confirmada.getValor_totalVenta() + "')";
+		try {
+			java.sql.Statement stm = con.createStatement();
+			stm.executeUpdate(consulta);
+			String consulta_2 = "SELECT MAX(codigo_venta) FROM tienda_virtual.ventas";
+			try {
+				//java.sql.Statement stm = con.createStatement();
+				ResultSet rs = stm.executeQuery(consulta_2);
+				if (rs.next()) {codigo_venta = rs.getInt(1);}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (SQLException e) {
+			System.out.println("No se ha logrado la operacion");
+			e.printStackTrace();
+		}
+		
+		if(codigo_venta >0) {
+			
+			int i=0;
+			for(productos x:listaproductos) {
+				
+				if (x != null) {
+					String consulta_3="INSERT INTO tienda_virtual.detalles_ventas (codigo_producto,cantidad,valor_unitario,valor_total,codigo_venta) VALUES ('"
+					+listaproductos[i].getCodigoProducto()+"' , '"+cantidades_productos[0][i]+"' , '"+listaproductos[0].getPrecioVenta()+"' ,'"+cantidades_productos[1][i]+"' , '"+codigo_venta+ "')";
+					
+					try {
+						java.sql.Statement stm = con.createStatement();
+						stm.executeUpdate(consulta_3);
+						
+					} catch (SQLException e) {
+						System.out.println("No se ha logrado la operacion");
+						e.printStackTrace();
+					}
+				}
+				
+				i++;
+				
+			}
+				
+		}
+		
+		return true;
+		
+		
+	}
+		
+		
+	
 	
 }

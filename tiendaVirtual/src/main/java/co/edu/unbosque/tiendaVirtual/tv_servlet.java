@@ -5,6 +5,7 @@ import modelo.conector;
 import modelo.productoVenta;
 import modelo.proveedor;
 import modelo.usuario;
+import modelo.ventaConfirmada;
 import modelo.productos;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class tv_servlet extends HttpServlet {
 
 	private conector conexion;
 	private productoVenta venta=new productoVenta();
+	private ventaConfirmada venta_confirmada=new ventaConfirmada();
 	String labels[][]= {{"nombreProducto1","nombreProducto2","nombreProducto3"},{"cantidadProducto_1","cantidadProducto_2","cantidadProducto_3"},{"totalValorProducto_1","totalValorProducto_2","totalValorProducto_3"}};
 	String cantidades_productos[][]= {{null,null,null},{null,null,null}};
 	productos listaproducto[]=new productos[3];
@@ -63,7 +65,6 @@ public class tv_servlet extends HttpServlet {
 		String botonConsltaVentasProducto_1=request.getParameter("botonConsultaProducto_1");
 		String botonConsltaVentasProducto_2=request.getParameter("botonConsultaProducto_2");
 		String botonConsltaVentasProducto_3=request.getParameter("botonConsultaProducto_3");
-		
 		String botonConfirmaVentas=request.getParameter("botonConfirmaVentas");
 		
 		
@@ -198,6 +199,7 @@ public class tv_servlet extends HttpServlet {
 				venta.agregarProductoVenta(null, 1);
 				venta.agregarProductoVenta(null, 2);
 				cantidades_productos=new String[2][3];
+				venta_confirmada.setCeludula_cliente(cliente.getCedulaCliente());
 				rd.forward(request, response);
 	
 			}
@@ -409,6 +411,10 @@ public class tv_servlet extends HttpServlet {
 				i++;
 			}
 			sumatoriaTotal=sumatoria+sumatoriaIva;
+			venta_confirmada.setValor_venta(Float.toString(sumatoria));
+			venta_confirmada.setValor_iva(Float.toString(sumatoriaIva));
+			venta_confirmada.setValor_totalVenta(Float.toString(sumatoriaTotal));
+			
 			NumberFormat moneda = NumberFormat.getCurrencyInstance();
 			String monedaSumatoria=moneda.format(sumatoria);
 			String monedaSumatoriaIva=moneda.format(sumatoriaIva);
@@ -502,7 +508,8 @@ public class tv_servlet extends HttpServlet {
 		RequestDispatcher rd;
 
 		if (validaUsuario) {
-			usuarioLogin=Usuario;
+			
+			venta_confirmada.setCedula_usuario(conexion.cedulaUsuario(Usuario));
 			rd = request.getRequestDispatcher("/administracion.jsp");
 			rd.forward(request, response);
 		}
@@ -520,33 +527,7 @@ public class tv_servlet extends HttpServlet {
 		// Crea usuario
 
 		//Consulta usuario
-		/*
-		else if (botonConsultaUsuario != null) {
-
-			usuario usuario = conexion.consultarUsuario(botonConsultaUsuario);
-			String nombreUsuario = usuario.getNombreUsuario();
-			String cedulaUsuario = usuario.getCedulaUsuario();
-			String correoUsuario = usuario.getCorreoUsuario();
-			String usuarioConsulta = usuario.getUsuario();
-			if (nombreUsuario != null) {
-				JOptionPane optionPane = new JOptionPane("Nombre: " + nombreUsuario + "\n" + "Cedula: " + cedulaUsuario
-						+ "\n" + "Correo: " + correoUsuario + "\n" + "Usuario: " + usuarioConsulta + "\n");
-				JDialog dialog = optionPane.createDialog("Consulta");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarUsuario.jsp");
-			}
-			else {
-				JOptionPane optionPane = new JOptionPane("La cedula del usuario no existe",
-						JOptionPane.WARNING_MESSAGE);
-				JDialog dialog = optionPane.createDialog("MinTech");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarUsuario.jsp");
-			}
-		}*/
-
-		//Crea usuario
+		
 		
 		else if (CreaUsuario != null && CreaContrasena != null && CreaCedula != null) {
 			usuario cedula = conexion.consultarUsuario(CreaCedula);
@@ -641,32 +622,7 @@ public class tv_servlet extends HttpServlet {
 		
 		//Modulo clientes
 		//Consulta cliente
-		/*
-		else if (botonConsultaCliente != null) {
-
-			cliente cliente = conexion.consultarCliente(botonConsultaCliente);
-			String nombreCliente = cliente.getNombreCliente();
-			String cedulaCliente = cliente.getCedulaCliente();
-			String correoCliente = cliente.getCorreoCliente();
-			String telefonoCliente = cliente.getTelefonoCliente();
-			String direccionCliente = cliente.getDireccionCliente();
-			if (nombreCliente != null) {
-				JOptionPane optionPane = new JOptionPane("Nombre: " + nombreCliente + "\n" + "Cedula: " + cedulaCliente
-						+ "\n" + "Correo: " + correoCliente + "\n" + "Teléfono: " + telefonoCliente + "\n" +  "Dirección: " + direccionCliente + "\n");
-				JDialog dialog = optionPane.createDialog("Cliente");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarCliente.jsp");
-			}
-			else {
-				JOptionPane optionPane = new JOptionPane("La cedula del cliente no existe",
-						JOptionPane.WARNING_MESSAGE);
-				JDialog dialog = optionPane.createDialog("MinTech");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarCliente.jsp");
-			}
-		}*/
+		
 		
 
 		else if (CreaCedulaCliente != null) {
@@ -739,32 +695,6 @@ public class tv_servlet extends HttpServlet {
 
 		
 		//Modulo proveedores
-		/*
-		else if (botonConsultaProveedor != null) {
-
-			proveedor proveedor = conexion.consultarProveedor(botonConsultaProveedor);
-			String nombreProveedor = proveedor.getNombreProveedor();
-			String nitProveedor = proveedor.getNit();
-			String ciudadProveedor = proveedor.getCiudadProveedor();
-			String telefonoProveedor = proveedor.getTelefonoProveedor();
-			String direccionProveedor = proveedor.getDireccionProveedor();
-			if (nombreProveedor != null) {
-				JOptionPane optionPane = new JOptionPane("Nombre: " + nombreProveedor + "\n" + "Nit: " + nitProveedor
-						+ "\n" + "Ciudad: " + ciudadProveedor + "\n" + "Teléfono: " + telefonoProveedor + "\n" +  "Dirección: " + direccionProveedor + "\n");
-				JDialog dialog = optionPane.createDialog("Cliente");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarProveedor.jsp");
-			}
-			else {
-				JOptionPane optionPane = new JOptionPane("El nit del proveedor no existe",
-						JOptionPane.WARNING_MESSAGE);
-				JDialog dialog = optionPane.createDialog("MinTech");
-				dialog.setAlwaysOnTop(true);
-				dialog.setVisible(true);
-				response.sendRedirect("consultarProveedor.jsp");
-			}
-		}*/
 		
 
 		else if (CreaNitProveedor != null) {
@@ -833,8 +763,25 @@ public class tv_servlet extends HttpServlet {
 		}
 		
 		if(botonFinalizaVentas != null ) {
-			
-			System.out.println("Holamundis");
+			listaproducto=venta.retornarProductos();
+			Boolean ans=conexion.confirmarVenta(venta_confirmada, listaproducto, cantidades_productos);
+			if (ans) {
+				JOptionPane optionPane = new JOptionPane(
+						"Compra confirmada");
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				response.sendRedirect("administracion.jsp");
+				
+			}else {
+				JOptionPane optionPane = new JOptionPane(
+						"Ocurrio un error, por favor verifique los datos ");
+				JDialog dialog = optionPane.createDialog("MinTech");
+				dialog.setAlwaysOnTop(true);
+				dialog.setVisible(true);
+				response.sendRedirect("ventasValidado.jsp");
+				
+			}
 		}
 		
 	}
