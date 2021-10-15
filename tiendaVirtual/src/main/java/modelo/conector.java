@@ -22,6 +22,7 @@ public class conector {
 	private static Connection con = null;
 	private Iterable<usuario> usuario;
 	
+	
 	public static void conectar() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -451,8 +452,91 @@ public class conector {
 		
 		
 	}
-		
-		
 	
 	
-}
+	public ArrayList<usuario> reporteUsuarios() {
+		conectar();
+		
+		ArrayList<usuario> listaUsuarios=new ArrayList<usuario>(); 
+		String consulta = "SELECT * FROM tienda_virtual.usuarios";
+		try {
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(consulta);
+			while (rs.next()) {
+				usuario usuario = new usuario();
+				usuario.setIdUsuario(rs.getString("idusuarios"));
+				usuario.setNombreUsuario(rs.getString("nombreUsuario"));
+				usuario.setCedulaUsuario(rs.getString("cedulaUsuario"));
+				usuario.setCorreoUsuario(rs.getString("correoUsuario"));
+				usuario.setUsuario(rs.getString("usuario"));
+				usuario.setContrasenaUsuario(rs.getString("contrasenaUsuario"));
+				listaUsuarios.add(usuario);
+				}
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return listaUsuarios;
+	}
+	
+	public ArrayList<cliente> reporteClientes() {
+		conectar();
+		
+		ArrayList<cliente> listaClientes=new ArrayList<cliente>(); 
+		String consulta = "SELECT * FROM tienda_virtual.clientes";
+		try {
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(consulta);
+			while (rs.next()) {
+				cliente cliente = new cliente();
+				cliente.setCedulaCliente(rs.getString("cedulaCliente"));
+				cliente.setNombreCliente(rs.getString("nombreCliente"));
+				cliente.setDireccionCliente(rs.getString("direccionCliente"));
+				cliente.setTelefonoCliente(rs.getString("telefonoCliente"));
+				cliente.setCorreoCliente(rs.getString("correoCliente"));
+				
+				listaClientes.add(cliente);
+				}
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return listaClientes;
+	}
+		/*
+	public void reporteVentasClientes() {
+		
+		String consulta="SELECT * FROM tienda_virtual.ventas";
+		
+		
+		try {
+			java.sql.Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(consulta);
+			while (rs.next()) {
+				String consulta_2="";
+				
+				ventaCliente venta=new ventaCliente();
+				venta.setCedula(rs.getString("cedula_cliente"));
+				venta.setValorTotalVenta (rs.getString("valor_totalConIva"));
+				
+			
+				
+				listaClientes.add(cliente);
+				}
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}*/
+			
+	}
+	
+	
+

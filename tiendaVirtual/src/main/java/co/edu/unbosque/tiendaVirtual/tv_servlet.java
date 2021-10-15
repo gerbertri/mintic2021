@@ -67,6 +67,10 @@ public class tv_servlet extends HttpServlet {
 		String botonConsltaVentasProducto_3=request.getParameter("botonConsultaProducto_3");
 		String botonConfirmaVentas=request.getParameter("botonConfirmaVentas");
 		
+		String listadoUsuarios=request.getParameter("listadoUsuarios");
+		String listadoClientes=request.getParameter("listadoClientes");
+		String listadoVentasClientes=request.getParameter("listadoVentasClientes");
+			
 		
 		
 		
@@ -426,6 +430,42 @@ public class tv_servlet extends HttpServlet {
 			rd.forward(request, response);
 		}
 		
+		// MODULO REPORTES 
+		
+		
+		if(listadoUsuarios != null) {
+			ArrayList<usuario> listaUsuarios=new ArrayList<usuario>();
+			RequestDispatcher rd = request.getRequestDispatcher("/reporteUsuarios.jsp");
+			listaUsuarios=conexion.reporteUsuarios();
+		
+				
+			request.setAttribute("listaUsuarios",listaUsuarios);
+			
+			rd.forward(request, response);
+			
+			
+			
+		}
+		
+		if(listadoClientes != null) {
+			ArrayList<cliente> listaClientes=new ArrayList<cliente>();
+			RequestDispatcher rd = request.getRequestDispatcher("/reporteClientes.jsp");
+			listaClientes=conexion.reporteClientes();
+		
+				
+			request.setAttribute("listaUsuarios",listaClientes);
+			
+			rd.forward(request, response);
+			
+			
+			
+		}
+		
+		
+		if(listadoVentasClientes != null) {
+			
+			
+		}
 		
 		
 	}
@@ -761,6 +801,9 @@ public class tv_servlet extends HttpServlet {
 				response.sendRedirect("borrarProveedor.jsp");
 			}
 		}
+		
+		 
+		
 		
 		if(botonFinalizaVentas != null ) {
 			listaproducto=venta.retornarProductos();
