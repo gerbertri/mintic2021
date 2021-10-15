@@ -5,6 +5,7 @@ import modelo.conector;
 import modelo.productoVenta;
 import modelo.proveedor;
 import modelo.usuario;
+import modelo.ventaCliente;
 import modelo.ventaConfirmada;
 import modelo.productos;
 
@@ -463,7 +464,22 @@ public class tv_servlet extends HttpServlet {
 		
 		
 		if(listadoVentasClientes != null) {
+			RequestDispatcher rd = request.getRequestDispatcher("/reporteVentasClientes.jsp");
+			NumberFormat moneda = NumberFormat.getCurrencyInstance();
+			ArrayList<ventaCliente> listaVentaClientes=new ArrayList<ventaCliente>();
+			listaVentaClientes=conexion.reporteVentasClientes();
 			
+			
+			double sumatoria=0;
+			for(ventaCliente x:listaVentaClientes) {
+				
+				sumatoria+=Double.parseDouble(x.getValorTotalVenta());
+			}
+			
+			String monedaSumatoria=moneda.format(sumatoria);
+			request.setAttribute("listaVentaClientes",listaVentaClientes);
+			request.setAttribute("totalVentas", monedaSumatoria);
+			rd.forward(request, response);
 			
 		}
 		

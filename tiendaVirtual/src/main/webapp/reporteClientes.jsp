@@ -20,7 +20,8 @@
 	
 	<div id="Contenido">
 		<section class="registro">
-		
+			<br>
+			<h2>Listado de Clientes</h2><br>
           
          	
                 <table class="tablaReporte" >

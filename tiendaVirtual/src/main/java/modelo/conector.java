@@ -507,25 +507,29 @@ public class conector {
 		
 		return listaClientes;
 	}
-		/*
-	public void reporteVentasClientes() {
+		
+	public ArrayList<ventaCliente> reporteVentasClientes() {
 		
 		String consulta="SELECT * FROM tienda_virtual.ventas";
-		
+		ArrayList<ventaCliente> listaVentaClientes=new ArrayList<ventaCliente>(); 
 		
 		try {
 			java.sql.Statement stm = con.createStatement();
+			//java.sql.Statement stm1 = con.createStatement();
 			ResultSet rs = stm.executeQuery(consulta);
 			while (rs.next()) {
-				String consulta_2="";
-				
 				ventaCliente venta=new ventaCliente();
+				//String consulta_2="SELECT nombreCliente FROM tienda_virtual.clientes WHERE cedulaCliente ='" +rs.getString("cedula_cliente")+"'";
 				venta.setCedula(rs.getString("cedula_cliente"));
 				venta.setValorTotalVenta (rs.getString("valor_totalConIva"));
 				
+				cliente cliente=consultarCliente(rs.getString("cedula_cliente"));
+				
+				//ResultSet rs_2 = stm1.executeQuery(consulta_2);				
+				venta.setNombre(cliente.getNombreCliente());
 			
 				
-				listaClientes.add(cliente);
+				listaVentaClientes.add(venta);
 				}
 				
 		} catch (SQLException e) {
@@ -534,7 +538,9 @@ public class conector {
 		}
 		
 		
-	}*/
+		return listaVentaClientes;
+		
+	}
 			
 	}
 	

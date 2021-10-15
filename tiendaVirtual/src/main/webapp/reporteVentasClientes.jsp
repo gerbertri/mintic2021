@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="modelo.conector" %>
-<%@ page import="modelo.cliente" %>
+<%@ page import="modelo.ventaCliente" %>
 <%@ page import="modelo.productoVenta" %>
 <%@ page import="javax.servlet.*" %>
-
+<%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.util.*" %>
 
 <!DOCTYPE html>
@@ -21,7 +21,8 @@
 	<div id="Contenido">
 		<section class="registro">
 		
-          
+          		<br>
+				<h2>Total Ventas por Cliente</h2><br>
          	
                 <table class="tablaReporte" >
                     <tr>
@@ -31,18 +32,26 @@
                        
                     </tr>
             		<% 
-           			ArrayList<cliente> listaUsuarios=new ArrayList<cliente>();
-           			cliente cliente = new cliente();
-           			listaUsuarios=(ArrayList<cliente>)request.getAttribute("listaUsuarios");
-            		for(cliente x:listaUsuarios){%>
+           			ArrayList<ventaCliente> listaVentaClientes=new ArrayList<ventaCliente>();
+           			NumberFormat moneda = NumberFormat.getCurrencyInstance();
+        			
+           			
+           			listaVentaClientes=(ArrayList<ventaCliente>)request.getAttribute("listaVentaClientes");
+            		for(ventaCliente x:listaVentaClientes){%>
             		<tr>
-            			<td align="middle"><% out.print(x.getCedulaCliente());%></td>
-            			<td align="middle"><% out.print(x.getNombreCliente());%></td>
-                        <td align="middle" ><% out.print(x.getCorreoCliente());%></td>
+            			<td align="middle"><% out.print(x.getCedula());%></td>
+            			<td align="middle"><% out.print(x.getNombre());%></td>
+                        <td align="middle"><% out.print(moneda.format(Double.parseDouble(x.getValorTotalVenta())));%></td>
                        
                  	</tr>
             		<%}%>            
            </table>
+           <br><hr><br>
+           <p>
+           <h2 class=totalReporte>Total Ventas : ${totalVentas}</h2> 
+          
+           </p>
+           <br>
 		</section>
 
 

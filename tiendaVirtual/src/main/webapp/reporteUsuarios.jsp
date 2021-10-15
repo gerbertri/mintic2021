@@ -19,8 +19,12 @@
 	<%@include file="administracion.jsp"%>
 	
 	<div id="Contenido">
+	
+	
 		<section class="registro">
-		s
+			<br>
+			<h2>Listado de Usuarios</h2><br>
+		
           
          	
                 <table class="tablaReporte" >
@@ -34,7 +38,7 @@
                     </tr>
             		<% 
            			ArrayList<usuario> listaUsuarios=new ArrayList<usuario>();
-           			usuario usuario = new usuario();
+           			
            			listaUsuarios=(ArrayList<usuario>)request.getAttribute("listaUsuarios");
             		for(usuario x:listaUsuarios){%>
             		<tr>
@@ -46,6 +50,7 @@
                  	</tr>
             		<%}%>            
            </table>
+           <br>
 		</section>
 
 

@@ -242,7 +242,7 @@ input{
     margin-left: 25%;
     font-size: 95%;
     width: 50%;
-    position: absolute;
+    position: relative;
     
 
 	
@@ -300,6 +300,8 @@ td{
     border-collapse:collapse;
     color:#8a8a8a;
     width: 80%;
+    position: relative;
+   	left:7.5%;
 }
 .tablaReporte td, .tablaReporte th {
     border: 1px solid #ddd;
@@ -308,11 +310,16 @@ td{
 
   
 .tablaReporte th{
-    padding-top: 8px;
-    padding-bottom: 8px;
-    text-align: left;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    text-align: center;
     background-color: rgb(4, 59, 86); 
     color: #eeeeee;
 }
 
 .tablaReporte tr:nth-child(even){background-color: #f2f2f2;}
+
+
+.totalReporte{
+	text-align: center;
+}
